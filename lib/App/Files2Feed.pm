@@ -88,5 +88,18 @@ sub _build_files { {} }
 
 ##################################
 
+sub run {
+  my ($self) = @_;
+
+  $self->find_files;
+  $self->generate_feed;
+}
+
+sub find_files {
+}
+
+sub generate_feed {
+}
+
 
 1;
