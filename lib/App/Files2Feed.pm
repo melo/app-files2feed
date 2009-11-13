@@ -8,6 +8,7 @@ use File::Find  ();
 use Path::Class ();
 use XML::Feed   ();
 use DateTime    ();
+use MIME::Types ();
 
 
 ##################################
@@ -90,6 +91,14 @@ has 'files' => (
 );
 
 sub _build_files { {} }
+
+has mime_types => (
+  isa        => 'MIME::Types',
+  is         => 'ro',
+  lazy_build => 1,
+);
+
+sub _build_mime_types { return MIME::Types->new }
 
 
 ##################################
