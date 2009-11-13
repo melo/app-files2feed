@@ -1,0 +1,9 @@
+{
+  "title": "Hot Perl Action!",
+  "homepage": "http://www.simplicidade.org/notes/",
+  "feed_url": "http://www.simplicidade.org/feeds/hot_perl.xml",
+  "tagline": "The inside view of Perl world",
+
+  "base_url": "http://www.simplicidade.org/",
+  "limit": 100
+}
