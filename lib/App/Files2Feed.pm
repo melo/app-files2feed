@@ -6,6 +6,8 @@ with 'App::Files2Feed::ConfigRole', 'MooseX::Getopt';
 
 use File::Find  ();
 use Path::Class ();
+use XML::Feed   ();
+use DateTime    ();
 
 
 ##################################
@@ -113,6 +115,22 @@ sub find_files {
 }
 
 sub generate_feed {
+  my ($self) = @_;
+
+  my $now = DateTime->now;
+
+  my $feed = XML::Feed->new($self->format);
+  $feed->title($self->title);
+  $feed->link($self->homepage)           if $self->homepage;
+  $feed->self_link($self->feed_url)      if $self->feed_url;
+  $feed->tagline($self->tagline)         if $self->tagline;
+  $feed->description($self->description) if $self->description;
+  $feed->author($self->author)           if $self->author;
+
+  $feed->modified($now);
+  $feed->generator("App::Files2Feed 0.1");
+
+  print $feed->as_xml;
 }
 
 
