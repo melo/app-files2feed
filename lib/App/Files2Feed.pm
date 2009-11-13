@@ -116,20 +116,8 @@ sub find_files {
 
 sub generate_feed {
   my ($self) = @_;
-
-  my $now = DateTime->now;
-
-  my $feed = XML::Feed->new($self->format);
-  $feed->title($self->title);
-  $feed->link($self->homepage)           if $self->homepage;
-  $feed->self_link($self->feed_url)      if $self->feed_url;
-  $feed->tagline($self->tagline)         if $self->tagline;
-  $feed->description($self->description) if $self->description;
-  $feed->author($self->author)           if $self->author;
-
-  $feed->modified($now);
-  $feed->generator("App::Files2Feed 0.1");
-
+  
+  my $feed = $self->_create_feed;
   print $feed->as_xml;
 }
 
@@ -143,6 +131,28 @@ sub _process_file {
   return if $file->is_dir && $self->skip_directories;
 
   $self->files->{"$file"} = $file;
+}
+
+
+##################################
+
+sub _create_feed {
+  my ($self) = @_;
+
+  my $now = DateTime->now;
+
+  my $feed = XML::Feed->new($self->format);
+  $feed->title($self->title);
+  $feed->link($self->homepage)           if $self->homepage;
+  $feed->self_link($self->feed_url)      if $self->feed_url;
+  $feed->tagline($self->tagline)         if $self->tagline;
+  $feed->description($self->description) if $self->description;
+  $feed->author($self->author)           if $self->author;
+
+  $feed->modified($now);
+  $feed->generator("App::Files2Feed 0.1");
+  
+  return $feed;
 }
 
 1;
