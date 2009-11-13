@@ -4,6 +4,10 @@ use Moose;
 use MooseX::Types::Path::Class;
 with 'App::Files2Feed::ConfigRole', 'MooseX::Getopt';
 
+use File::Find  ();
+use Path::Class ();
+
+
 ##################################
 
 has 'format' => (
@@ -96,10 +100,31 @@ sub run {
 }
 
 sub find_files {
+  my ($self) = @_;
+
+  $self->clear_files;
+  File::Find::find(
+    { wanted   => sub { $self->_process_file(@_) },
+      follow   => 1,
+      no_chdir => 1,
+    },
+    $self->dir
+  );
 }
 
 sub generate_feed {
 }
 
+
+##################################
+
+sub _process_file {
+  my ($self) = @_;
+  my $file = -d $_ ? Path::Class::dir($_) : Path::Class::file($_);
+
+  return if $file->is_dir && $self->skip_directories;
+
+  $self->files->{"$file"} = $file;
+}
 
 1;
