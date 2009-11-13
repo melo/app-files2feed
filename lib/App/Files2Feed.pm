@@ -4,11 +4,12 @@ use Moose;
 use MooseX::Types::Path::Class;
 with 'App::Files2Feed::ConfigRole', 'MooseX::Getopt';
 
-use File::Find  ();
-use Path::Class ();
-use XML::Feed   ();
-use DateTime    ();
-use MIME::Types ();
+use File::Find           ();
+use Path::Class          ();
+use XML::Feed            ();
+use XML::Feed::Enclosure ();
+use DateTime             ();
+use MIME::Types          ();
 
 
 ##################################
@@ -125,8 +126,14 @@ sub find_files {
 
 sub generate_feed {
   my ($self) = @_;
-  
+
   my $feed = $self->_create_feed;
+
+  my @files = $self->_sort_files;
+  foreach my $file_info (@files) {
+    $self->_add_file_to_feed($file_info, $feed);
+  }
+
   print $feed->as_xml;
 }
 
@@ -136,10 +143,21 @@ sub generate_feed {
 sub _process_file {
   my ($self) = @_;
   my $file = -d $_ ? Path::Class::dir($_) : Path::Class::file($_);
+  my $modt = -M _;
+  my $size = -s _;
 
   return if $file->is_dir && $self->skip_directories;
 
-  $self->files->{"$file"} = $file;
+  $self->files->{"$file"} = [$file, $modt, $size];
+}
+
+sub _sort_files {
+  my ($self) = @_;
+  my $files = $self->files;
+
+  my @files = sort { $a->[1] <=> $b->[1] } values %$files;
+
+  return splice(@files, 0, $self->limit);
 }
 
 
@@ -160,8 +178,43 @@ sub _create_feed {
 
   $feed->modified($now);
   $feed->generator("App::Files2Feed 0.1");
-  
+
   return $feed;
+}
+
+sub _add_file_to_feed {
+  my ($self, $file_info, $feed) = @_;
+  my ($file, $modt,      $size) = @$file_info;
+
+  my $m_epoch  = $^T - $modt * 86600;
+  my $rel_file = $file->relative($self->dir);
+  my $url      = $self->base_url . "/$rel_file";
+
+  my $entry = XML::Feed::Entry->new($self->format);
+  $entry->title($file->basename);
+  $entry->link($url);
+
+  $entry->issued(DateTime->from_epoch(epoch => $m_epoch));
+
+  $entry->content(<<"  EOC");
+  <dl>
+    <dt>File</dt>
+    <dd>$rel_file</dd>
+    <dt>Size</dt>
+    <dd>$size</dd>
+  </dl>
+  EOC
+
+
+  my $enc = XML::Feed::Enclosure->new(
+    { url    => $url,
+      type   => $self->mime_types->mimeTypeOf("$file"),
+      length => $size,
+    }
+  );
+  $entry->enclosure($enc);
+
+  $feed->add_entry($entry);
 }
 
 1;
