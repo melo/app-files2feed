@@ -1,0 +1,7 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use App::Files2Feed;
+
+App::Files2Feed->new_with_options()->run;
