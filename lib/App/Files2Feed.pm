@@ -217,3 +217,70 @@ sub _add_file_to_feed {
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+App::Files2Feed - create a feed for a directory of files
+
+
+=head1 SYNOPSIS
+
+    # Check the files2feed script first
+    
+    use App::Files2Feed;
+    
+    my $f2f = App::Files2Feed->new({
+    });
+
+
+=head1 DESCRIPTION
+
+...
+
+=head1 API
+
+...
+
+=head2 new
+
+    my $f2f = App::Files2Feed->new(\%options);
+
+...
+
+
+=head2 run
+
+    $f2f->run;
+
+...
+
+
+=head2 find_files
+
+    $f2f->find_files;
+
+...
+
+
+=head2 generate_feed
+
+    $f2f->generate_feed;
+
+...
+
+
+=head1 AUTHOR
+
+Pedro Melo, C<< <melo at cpan.org> >>
+
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2009 Pedro Melo.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+=cut
