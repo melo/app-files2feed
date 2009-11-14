@@ -9,6 +9,7 @@ use XML::Feed            ();
 use XML::Feed::Enclosure ();
 use DateTime             ();
 use MIME::Types          ();
+use FileHandle           ();
 
 
 ##################################
@@ -37,6 +38,11 @@ has 'dir' => (
   isa      => 'Str',
   is       => 'ro',
   required => 1,
+);
+
+has 'output' => (
+  isa => 'Str',
+  is  => 'ro',
 );
 
 has 'include' => (
@@ -139,7 +145,16 @@ sub generate_feed {
     $self->_add_file_to_feed($file_info, $feed);
   }
 
-  print $feed->as_xml;
+  if (my $file = $self->output) {
+    my $tmp = Path::Class::file("$file.tmp");
+    my $fh = $tmp->openw;
+    $fh->print($feed->as_xml);
+    $fh->close;
+    rename("$tmp", $file) || unlink("$tmp");
+  }
+  else {
+    print $feed->as_xml;    
+  }
 }
 
 
