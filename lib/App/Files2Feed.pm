@@ -153,16 +153,26 @@ sub _process_file {
 
   return if $file->is_dir && $self->skip_directories;
 
+  my $selected;
   my $include = $self->include;
   if (@$include) {
-    my $selected = 0;
+    $selected = 0;
 
   RULE: foreach my $rule (@$include) {
-      $selected++, last RULE if "$file" =~ m/$rule/;
+      $selected = 1, last RULE if "$file" =~ m/$rule/;
     }
-
-    return unless $selected;
   }
+  return if defined $selected && !$selected;
+
+  my $exclude = $self->exclude;
+  if (@$exclude) {
+    $selected = 1;
+
+  RULE: foreach my $rule (@$exclude) {
+      $selected = 0, last RULE if "$file" =~ m/$rule/;
+    }
+  }
+  return if defined $selected && !$selected;
 
   $self->files->{"$file"} = [$file, $modt, $size];
 }
