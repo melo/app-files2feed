@@ -39,6 +39,12 @@ has 'dir' => (
   required => 1,
 );
 
+has 'include' => (
+  isa     => 'ArrayRef',
+  is      => 'ro',
+  default => sub { [] },
+);
+
 has 'base_url' => (
   isa      => 'Str',
   is       => 'ro',
@@ -146,6 +152,17 @@ sub _process_file {
   my $size = -s _;
 
   return if $file->is_dir && $self->skip_directories;
+
+  my $include = $self->include;
+  if (@$include) {
+    my $selected = 0;
+
+  RULE: foreach my $rule (@$include) {
+      $selected++, last RULE if "$file" =~ m/$rule/;
+    }
+
+    return unless $selected;
+  }
 
   $self->files->{"$file"} = [$file, $modt, $size];
 }
