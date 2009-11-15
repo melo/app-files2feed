@@ -64,8 +64,9 @@ has 'title' => (
 );
 
 has 'homepage' => (
-  isa => 'Str',
-  is  => 'ro',
+  isa      => 'Str',
+  is       => 'ro',
+  required => 1,
 );
 
 has 'feed_url' => (
@@ -211,7 +212,8 @@ sub _create_feed {
 
   my $feed = XML::Feed->new($self->format);
   $feed->title($self->title);
-  $feed->link($self->homepage)           if $self->homepage;
+  $feed->id($self->homepage);
+  $feed->link($self->homepage);
   $feed->self_link($self->feed_url)      if $self->feed_url;
   $feed->tagline($self->tagline)         if $self->tagline;
   $feed->description($self->description) if $self->description;
