@@ -239,7 +239,8 @@ sub _add_file_to_feed {
   $entry->link($url);
   $entry->id($url);
 
-  $entry->issued(DateTime->from_epoch(epoch => $m_epoch));
+  $entry->issued(DateTime->from_epoch(epoch => $m_epoch)->set_time_zone('UTC'));
+  $entry->modified(DateTime->from_epoch(epoch => $m_epoch)->set_time_zone('UTC'));
 
   $entry->content(<<"  EOC");
   <dl>
