@@ -148,13 +148,13 @@ sub generate_feed {
 
   if (my $file = $self->output) {
     my $tmp = Path::Class::file("$file.tmp");
-    my $fh = $tmp->openw;
+    my $fh  = $tmp->openw;
     $fh->print($feed->as_xml);
     $fh->close;
     rename("$tmp", $file) || unlink("$tmp");
   }
   else {
-    print $feed->as_xml;    
+    print $feed->as_xml;
   }
 }
 
