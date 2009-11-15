@@ -235,6 +235,7 @@ sub _add_file_to_feed {
 
   my $entry = XML::Feed::Entry->new($self->format);
   $entry->title($file->basename);
+  $entry->author($self->author);
   $entry->link($url);
 
   $entry->issued(DateTime->from_epoch(epoch => $m_epoch));
