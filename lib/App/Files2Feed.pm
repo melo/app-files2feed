@@ -10,6 +10,7 @@ use XML::Feed::Enclosure ();
 use DateTime             ();
 use MIME::Types          ();
 use FileHandle           ();
+use Number::Bytes::Human qw(format_bytes);
 
 use namespace::clean -except => 'meta';
 
@@ -247,6 +248,7 @@ sub _add_file_to_feed {
   $entry->modified(DateTime->from_epoch(epoch => $m_epoch)->set_time_zone('UTC'));
 
   my ($purl, $pname) = $url =~ m!^(.+/([^/]+)/)[^/]+$!;
+  my $fsize = format_bytes($size);
 
   $entry->content(<<"  EOC");
   <p>Inside <a href="$purl">$pname</a>:</p>
@@ -254,7 +256,7 @@ sub _add_file_to_feed {
     <dt>File</dt>
     <dd>$rel_file</dd>
     <dt>Size</dt>
-    <dd>$size</dd>
+    <dd>$fsize</dd>
   </dl>
   EOC
 
