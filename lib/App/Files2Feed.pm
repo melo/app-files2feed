@@ -11,6 +11,8 @@ use DateTime             ();
 use MIME::Types          ();
 use FileHandle           ();
 
+use namespace::clean -except => 'meta';
+
 
 ##################################
 
