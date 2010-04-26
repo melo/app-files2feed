@@ -14,6 +14,8 @@ use FileHandle           ();
 
 ##################################
 
+has '+configfile' => (default => './.files2feed');
+
 has 'format' => (
   is            => 'ro',
   isa           => 'Str',

@@ -4,8 +4,6 @@ use Moose::Role;
 use Config::Any;
 with 'MooseX::ConfigFromFile';
 
-has '+configfile' => (default => './.files2feed');
-
 sub get_config_from_file {
   my ($class, $file) = @_;
 
