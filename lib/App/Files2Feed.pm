@@ -242,7 +242,10 @@ sub _add_file_to_feed {
   $entry->issued(DateTime->from_epoch(epoch => $m_epoch)->set_time_zone('UTC'));
   $entry->modified(DateTime->from_epoch(epoch => $m_epoch)->set_time_zone('UTC'));
 
+  my ($purl, $pname) = $url =~ m!^(.+/([^/]+)/)[^/]+$!;
+
   $entry->content(<<"  EOC");
+  <p>Inside <a href="$purl">$pname</a>:</p>
   <dl>
     <dt>File</dt>
     <dd>$rel_file</dd>
@@ -250,7 +253,6 @@ sub _add_file_to_feed {
     <dd>$size</dd>
   </dl>
   EOC
-
 
   my $enc = XML::Feed::Enclosure->new(
     { url    => $url,
