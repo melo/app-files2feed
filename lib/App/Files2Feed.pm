@@ -94,6 +94,12 @@ has 'description' => (
   is  => 'ro',
 );
 
+has 'follow' => (
+  isa     => 'Bool',
+  is      => 'ro',
+  default => 0,
+);
+
 has 'limit' => (
   isa      => 'Int',
   is       => 'ro',
@@ -134,7 +140,7 @@ sub find_files {
   $self->clear_files;
   File::Find::find(
     { wanted   => sub { $self->_process_file(@_) },
-      follow   => 1,
+      follow   => $self->follow,
       no_chdir => 1,
     },
     $self->dir
