@@ -175,7 +175,7 @@ sub generate_feed {
 sub _process_file {
   my ($self) = @_;
   my $file = -d $_ ? Path::Class::dir($_) : Path::Class::file($_);
-  my $modt = -M _;
+  my $modt = $^T - (-M _) * 86600;
   my $size = -s _;
 
   return if $file->is_dir && $self->skip_directories;
@@ -240,7 +240,7 @@ sub _add_file_to_feed {
   my ($self, $file_info, $feed) = @_;
   my ($file, $modt,      $size) = @$file_info;
 
-  my $m_epoch  = $^T - $modt * 86600;
+  my $m_epoch  = $modt;
   my $rel_file = $file->relative($self->dir);
   my $url      = $self->base_url . "/$rel_file";
 
