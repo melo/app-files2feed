@@ -266,9 +266,15 @@ sub _add_file_to_feed {
   </dl>
   EOC
 
+  my $mimetype = $self->mime_types->mimeTypeOf("$file");
+  if (!$mimetype) {
+    $mimetype = 'video/x-msvideo';
+    warn "Unknown MIME type for file \"$file\"\n";
+  }
+
   my $enc = XML::Feed::Enclosure->new(
     { url    => $url,
-      type   => $self->mime_types->mimeTypeOf("$file"),
+      type   => $mimetype,
       length => $size,
     }
   );
