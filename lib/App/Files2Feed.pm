@@ -97,7 +97,7 @@ has 'description' => (
 has 'follow' => (
   isa     => 'Bool',
   is      => 'ro',
-  default => 0,
+  default => 1,
 );
 
 has 'limit' => (
