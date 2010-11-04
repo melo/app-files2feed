@@ -208,7 +208,7 @@ sub _sort_files {
   my ($self) = @_;
   my $files = $self->files;
 
-  my @files = sort { $a->[1] <=> $b->[1] } values %$files;
+  my @files = sort { $b->[1] <=> $a->[1] } values %$files;
 
   return splice(@files, 0, $self->limit);
 }
